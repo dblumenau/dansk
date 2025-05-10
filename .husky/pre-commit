@@ -1,0 +1,24 @@
+#!/bin/sh
+set -e
+
+echo "🔍 Running Pint on staged PHP files..."
+for file in $(git diff --cached --name-only --diff-filter=ACM | grep -E '\.php$' | grep -v '\.blade\.php$'); do
+  [ -f "$file" ] || continue
+  echo "Formatting PHP: $file"
+  ./vendor/bin/pint "$file"
+  if ! git check-ignore -q "$file"; then
+    git add "$file"
+  fi
+done
+
+echo "🎨 Running Prettier on staged JS/CSS/JSON/MD files..."
+for file in $(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|ts|vue|json|css|scss|md)$' | grep -v '^\.vscode/'); do
+  [ -f "$file" ] || continue
+  echo "Formatting file: $file"
+  npx prettier --write "$file"
+  if ! git check-ignore -q "$file"; then
+    git add "$file"
+  fi
+done
+
+exit 0
