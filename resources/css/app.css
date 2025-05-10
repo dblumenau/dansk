@@ -1,2 +1,27 @@
 @import 'tailwindcss';
 @source "../views";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom memory card flip animation */
+@layer utilities {
+  .memory-card-flip {
+    perspective: 1000px;
+  }
+  .memory-card-content {
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+    transform: rotateY(0deg);
+  }
+  .is-flipped .memory-card-content {
+    transform: rotateY(180deg);
+  }
+  .memory-card-front, .memory-card-back {
+    backface-visibility: hidden;
+  }
+  .memory-card-front {
+    transform: rotateY(180deg);
+  }
+}

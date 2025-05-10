@@ -20,5 +20,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
         $this->call(\Database\Seeders\NounSeeder::class);
+        $this->call(\Database\Seeders\MemoryTermSeeder::class);
     }
 }

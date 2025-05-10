@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Danish Learning App')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
   </head>
   <body class="bg-gray-50 min-h-screen flex flex-col">
     <header class="bg-white shadow p-4">
@@ -19,6 +20,9 @@
             <li>
               <a href="{{ route('games.noun-gender-sorter') }}" class="text-gray-700 hover:text-sky-700 font-medium transition-colors px-3 py-2 rounded hover:bg-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-400">Noun Gender Sorter</a>
             </li>
+            <li>
+              <a href="{{ route('games.memory-game') }}" class="text-gray-700 hover:text-sky-700 font-medium transition-colors px-3 py-2 rounded hover:bg-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-400">Memory Game</a>
+            </li>
             <!-- Add more nav links here as you add more games -->
           </ul>
         </nav>
@@ -30,5 +34,6 @@
     <footer class="bg-gray-100 text-center text-gray-500 py-4 text-sm">
       &copy; {{ date('Y') }} Danish Learning App
     </footer>
+    @stack('scripts')
   </body>
 </html>
