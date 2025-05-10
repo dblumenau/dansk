@@ -9,8 +9,19 @@
   </head>
   <body class="bg-gray-50 min-h-screen flex flex-col">
     <header class="bg-white shadow p-4">
-      <div class="container mx-auto">
+      <div class="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <h1 class="text-2xl font-bold text-gray-800">Danish Learning App</h1>
+        <nav class="w-full sm:w-auto">
+          <ul class="flex flex-col sm:flex-row gap-2 sm:gap-6 items-center justify-center">
+            <li>
+              <a href="/" class="text-gray-700 hover:text-sky-700 font-medium transition-colors px-3 py-2 rounded hover:bg-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-400">Home</a>
+            </li>
+            <li>
+              <a href="{{ route('games.noun-gender-sorter') }}" class="text-gray-700 hover:text-sky-700 font-medium transition-colors px-3 py-2 rounded hover:bg-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-400">Noun Gender Sorter</a>
+            </li>
+            <!-- Add more nav links here as you add more games -->
+          </ul>
+        </nav>
       </div>
     </header>
     <main class="flex-1 container mx-auto p-4">
