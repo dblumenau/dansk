@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MemoryTermController;
 
 Route::get('/', function () {
   return view('home');
@@ -11,3 +12,5 @@ Route::get('/games/noun-gender-sorter', [\App\Http\Controllers\Games\NounGenderS
 Route::get('/games/memory-game', function () {
     return view('games.memory-game');
 })->name('games.memory-game');
+
+Route::resource('memory-terms', MemoryTermController::class);

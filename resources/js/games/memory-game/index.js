@@ -109,10 +109,10 @@ function initializeGame(termsArray) {
 
   gameBoard.innerHTML = '';
   const numCards = gameCardsData.length;
-  if (numCards <= 12) gameBoard.className = 'game-board grid grid-cols-3 sm:grid-cols-4 gap-3 p-4 bg-white rounded-xl shadow-xl min-h-[100px]';
-  else if (numCards <= 20) gameBoard.className = 'game-board grid grid-cols-4 sm:grid-cols-5 gap-3 p-4 bg-white rounded-xl shadow-xl min-h-[100px]';
-  else if (numCards <= 30) gameBoard.className = 'game-board grid grid-cols-5 sm:grid-cols-6 gap-3 p-4 bg-white rounded-xl shadow-xl min-h-[100px]';
-  else gameBoard.className = 'game-board grid grid-cols-6 sm:grid-cols-8 gap-3 p-4 bg-white rounded-xl shadow-xl min-h-[100px]';
+  if (numCards <= 12) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 gap-1 sm:gap-1 p-1 sm:p-2 bg-white rounded-xl shadow-xl min-h-[100px]';
+  else if (numCards <= 20) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-1 sm:gap-1 p-1 sm:p-2 bg-white rounded-xl shadow-xl min-h-[100px]';
+  else if (numCards <= 30) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-4 sm:grid-cols-6 gap-1 sm:gap-1 p-1 sm:p-2 bg-white rounded-xl shadow-xl min-h-[100px]';
+  else gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-4 sm:grid-cols-8 gap-1 sm:gap-1 p-1 sm:p-2 bg-white rounded-xl shadow-xl min-h-[100px]';
 
   gameCardsData.forEach(item => {
     const cardElement = createCardElement(item);

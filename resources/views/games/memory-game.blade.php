@@ -19,7 +19,7 @@
     </div>
     <div class="flex items-center justify-center">
       <button type="submit" id="startGameButton" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline transition-colors duration-150 ease-in-out shadow-md hover:shadow-lg">
-        Hent Ord & Start Spil
+        Hent Ord & Start Spil / Fetch Words & Start Game
       </button>
     </div>
   </form>
@@ -34,7 +34,7 @@
       <button class="button bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-5 rounded-lg focus:outline-none focus:shadow-outline transition-colors shadow hover:shadow-md" id="resetButton" style="display: none;">Nulstil Spil</button>
     </div>
 
-    <div class="game-board grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-3 p-4 bg-white rounded-xl shadow-xl min-h-[100px]" id="gameBoard">
+    <div class="game-board grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-1 sm:gap-1 p-1 sm:p-1 bg-white rounded-xl shadow-xl min-h-[100px]" id="gameBoard">
       <p class="text-slate-500 col-span-full text-center py-10">Vælg et emne og tryk på 'Hent Ord & Start Spil' for at begynde.</p>
     </div>
   </div>
