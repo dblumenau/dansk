@@ -21,7 +21,7 @@
               <a href="{{ route('games.noun-gender-sorter') }}" class="text-gray-700 hover:text-sky-700 font-medium transition-colors px-3 py-2 rounded hover:bg-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-400">Noun Gender Sorter</a>
             </li>
             <li>
-              <a href="{{ route('games.memory-game') }}" class="text-gray-700 hover:text-sky-700 font-medium transition-colors px-3 py-2 rounded hover:bg-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-400">Memory Game</a>
+              <a href="{{ route('memory-game.index') }}" class="text-gray-700 hover:text-sky-700 font-medium transition-colors px-3 py-2 rounded hover:bg-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-400">Memory Game</a>
             </li>
             <li>
               <a href="{{ route('memory-terms.index') }}" class="text-gray-700 hover:text-sky-700 font-medium transition-colors px-3 py-2 rounded hover:bg-sky-100 focus:outline-none focus:ring-2 focus:ring-sky-400">Memory Terms</a>

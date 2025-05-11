@@ -16,7 +16,8 @@ const finalMoves = document.getElementById('finalMoves');
 const playAgainButton = document.getElementById('playAgainButton');
 const newTopicButton = document.getElementById('newTopicButton');
 
-let currentTerms = [];
+// --- Global Game State Variables ---
+let currentTerms = []; // Holds the terms for the current game
 let firstCard = null;
 let secondCard = null;
 let lockBoard = false;
@@ -24,48 +25,64 @@ let moves = 0;
 let matchedPairs = 0;
 let totalPairs = 0;
 
-// --- Event Listeners ---
-if (topicForm) {
-  topicForm.addEventListener('submit', async function(event) {
-    event.preventDefault();
-    event.stopPropagation(); // Prevent any default form submission
-    const selectedTopic = topicSelect.value;
-    if (selectedTopic === 'default') {
-      gameBoard.innerHTML = '<p class="text-orange-600 col-span-full text-center py-10">Vælg venligst et gyldigt emne.</p>';
-      return;
+// --- Initial Setup ---
+document.addEventListener('DOMContentLoaded', () => {
+  // If terms are pre-loaded by Blade (because a topic URL was visited directly)
+  if (window.memoryGameTerms && window.memoryGameTerms.length > 0) {
+    currentTerms = window.memoryGameTerms.map(term => ({ da: term.da, en: term.en }));
+    totalPairs = currentTerms.length;
+    initializeGame(currentTerms);
+    if(resetButton) resetButton.style.display = 'inline-block';
+    if(startGameButton) startGameButton.textContent = 'Genstart Spil Med Dette Emne';
+    // Ensure the topic select dropdown reflects the current topic
+    if (topicSelect && window.selectedTopicSlug) {
+        topicSelect.value = window.selectedTopicSlug;
     }
-    startGameButton.disabled = true;
-    startGameButton.textContent = 'Henter...';
-    gameBoard.innerHTML = `<p class="text-slate-500 col-span-full text-center py-10">Henter ord for emnet: ${selectedTopic}...</p>`;
-    resetButton.style.display = 'none';
-    try {
-      // Always use absolute URL for local API in dev
-      console.log('Fetching data from API:', window.location.origin + '/api/memory-terms?topic=' + encodeURIComponent(selectedTopic));
-      const apiUrl = window.location.origin + '/api/memory-terms?topic=' + encodeURIComponent(selectedTopic);
-      const response = await fetch(apiUrl);
-      if (!response.ok) throw new Error(`Netværksfejl: ${response.statusText}`);
-      const fetchedData = await response.json();
-      if (fetchedData && fetchedData.length > 0) {
-        currentTerms = fetchedData.map((term, index) => ({
-          da: term.da,
-          en: term.en
-        }));
-        totalPairs = currentTerms.length;
-        initializeGame(currentTerms);
-        resetButton.style.display = 'inline-block';
-      } else {
-        gameBoard.innerHTML = `<p class="text-red-500 col-span-full text-center py-10">Ingen ord fundet for dette emne. Prøv emnet 'Jobs & Arbejde'.</p>`;
-        resetButton.style.display = 'none';
-      }
-    } catch (error) {
-      gameBoard.innerHTML = `<p class="text-red-500 col-span-full text-center py-10">Fejl ved hentning af ord: ${error.message}</p>`;
-    } finally {
-      startGameButton.disabled = false;
-      startGameButton.textContent = 'Hent Ord & Start Spil';
-    }
-  });
-}
+  } else if (gameBoard) {
+    // Default message if no topic is pre-loaded
+    gameBoard.innerHTML = "<p class='text-slate-500 col-span-full text-center py-10'>Vælg et emne og tryk på 'Start Spil' for at begynde.</p>";
+  }
 
+  // --- Event Listeners ---
+  if (topicForm) {
+    topicForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      const selectedTopic = topicSelect.value;
+      if (selectedTopic && selectedTopic !== 'default') {
+        // Navigate to the new route for the selected topic
+        window.location.href = `/memory-game/${selectedTopic}`;
+      } else {
+        if(gameBoard) gameBoard.innerHTML = '<p class="text-orange-600 col-span-full text-center py-10">Vælg venligst et gyldigt emne.</p>';
+      }
+    });
+  }
+
+  if (resetButton) {
+    resetButton.addEventListener('click', () => {
+      if (currentTerms.length > 0) {
+        initializeGame(currentTerms); // Re-initialize with the same terms
+      }
+    });
+  }
+
+  if (playAgainButton) {
+    playAgainButton.addEventListener('click', () => {
+      winModal.style.display = 'none';
+      if (currentTerms.length > 0) {
+        initializeGame(currentTerms); // Re-initialize with the same terms
+      }
+    });
+  }
+
+  if (newTopicButton) {
+    newTopicButton.addEventListener('click', () => {
+      // Navigate to the main memory game page to select a new topic
+      window.location.href = '/memory-game';
+    });
+  }
+});
+
+// --- Core Game Logic Functions ---
 function createCardElement(item) {
   const cardDiv = document.createElement('div');
   cardDiv.className = 'card bg-transparent h-24 rounded-lg cursor-pointer relative transition-transform duration-500 ease-in-out';
@@ -97,27 +114,48 @@ function initializeGame(termsArray) {
   firstCard = null;
   secondCard = null;
   lockBoard = false;
-  updateCounters();
-  winModal.style.display = 'none';
+  if(winModal) winModal.style.display = 'none';
+
+  // Ensure currentTerms is correctly populated for resets/replays
+  if (termsArray && termsArray.length > 0) {
+    currentTerms = termsArray.map(term => ({ da: term.da, en: term.en })); // Make a fresh copy if needed
+    totalPairs = currentTerms.length;
+  } else if (window.memoryGameTerms && window.memoryGameTerms.length > 0) {
+    // Fallback for direct load if termsArray isn't passed explicitly on reset
+    currentTerms = window.memoryGameTerms.map(term => ({ da: term.da, en: term.en }));
+    totalPairs = currentTerms.length;
+  }
+
+  updateCounters(); // Update counters with totalPairs
+
+  if (!currentTerms || currentTerms.length === 0) {
+    if(gameBoard) gameBoard.innerHTML = '<p class="text-red-500 col-span-full text-center py-10">Ingen ord at vise. Vælg et emne.</p>';
+    if(resetButton) resetButton.style.display = 'none';
+    return;
+  }
 
   let gameCardsData = [];
-  termsArray.forEach((term, index) => {
+  currentTerms.forEach((term, index) => {
     gameCardsData.push({ value: term.da, pairId: index, type: 'danish' });
     gameCardsData.push({ value: term.en, pairId: index, type: 'english' });
   });
   shuffle(gameCardsData);
 
-  gameBoard.innerHTML = '';
-  const numCards = gameCardsData.length;
-  if (numCards <= 12) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 gap-1 sm:gap-1 p-1 sm:p-2 bg-white rounded-xl shadow-xl min-h-[100px]';
-  else if (numCards <= 20) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-1 sm:gap-1 p-1 sm:p-2 bg-white rounded-xl shadow-xl min-h-[100px]';
-  else if (numCards <= 30) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-4 sm:grid-cols-6 gap-1 sm:gap-1 p-1 sm:p-2 bg-white rounded-xl shadow-xl min-h-[100px]';
-  else gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-4 sm:grid-cols-8 gap-1 sm:gap-1 p-1 sm:p-2 bg-white rounded-xl shadow-xl min-h-[100px]';
+  if(gameBoard) {
+    gameBoard.innerHTML = ''; // Clear previous cards
+    const numCards = gameCardsData.length;
+    // Adjusted class names for gap and padding to match Blade (gap-px, p-1 sm:p-1)
+    if (numCards <= 12) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 gap-px p-1 sm:p-1 bg-white rounded-xl shadow-xl min-h-[100px]';
+    else if (numCards <= 20) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-px p-1 sm:p-1 bg-white rounded-xl shadow-xl min-h-[100px]';
+    else if (numCards <= 30) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-4 sm:grid-cols-6 gap-px p-1 sm:p-1 bg-white rounded-xl shadow-xl min-h-[100px]';
+    else gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-4 sm:grid-cols-8 gap-px p-1 sm:p-1 bg-white rounded-xl shadow-xl min-h-[100px]';
 
-  gameCardsData.forEach(item => {
-    const cardElement = createCardElement(item);
-    gameBoard.appendChild(cardElement);
-  });
+    gameCardsData.forEach(item => {
+      const cardElement = createCardElement(item);
+      gameBoard.appendChild(cardElement);
+    });
+  }
+  if(resetButton) resetButton.style.display = 'inline-block';
 }
 
 function shuffle(array) {
@@ -188,31 +226,4 @@ function updateCounters() {
 function showWinModal() {
   finalMoves.textContent = moves;
   winModal.style.display = 'flex';
-}
-
-if (resetButton) {
-  resetButton.addEventListener('click', () => {
-    if (currentTerms.length > 0) {
-      initializeGame(currentTerms);
-    }
-  });
-}
-if (playAgainButton) {
-  playAgainButton.addEventListener('click', () => {
-    winModal.style.display = 'none';
-    if (currentTerms.length > 0) {
-      initializeGame(currentTerms);
-    }
-  });
-}
-if (newTopicButton) {
-  newTopicButton.addEventListener('click', () => {
-    winModal.style.display = 'none';
-    gameBoard.innerHTML = "<p class='text-slate-500 col-span-full text-center py-10'>Vælg et emne og tryk på 'Hent Ord & Start Spil' for at begynde.</p>";
-    movesCounter.textContent = '0';
-    pairsCounter.textContent = '0';
-    totalPairsDisplay.textContent = '0';
-    resetButton.style.display = 'none';
-    topicSelect.value = 'default';
-  });
 }
