@@ -16,6 +16,8 @@
 * **DOM Interaction**:
     * Select DOM elements from the Blade templates.
     * Update content and attributes dynamically.
+
+* **Handling Multiple Steps**: Whenever possible, split the blade views into separate steps. For example if step 1 is to choose a category of words, and step 2 is to play the game based on that category, then split the blade views into `step1.blade.php` and `step2.blade.php` where step 2 received a query string with the category and then returns a view with those filtered items loaded in. This will make it easier to manage the state of the game and to update the UI based on user interactions as well as handling refreshes and back button clicks.
 * **State Management**: Manage the feature's state using plain JavaScript objects or simple functions.
 * **API Calls**: Use the `Workspace` API to get data from or send data to Laravel backend API endpoints (JSON). Handle responses and errors.
 * **Event Handling**: Add event listeners for user interactions.

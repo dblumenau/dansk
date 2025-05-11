@@ -38,7 +38,7 @@
         <button class="button bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-5 rounded-lg focus:outline-none focus:shadow-outline transition-colors shadow hover:shadow-md" id="resetButton" style="display: none;">Nulstil Spil</button>
       </div>
 
-      <div class="game-board grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-px p-1 sm:p-1 bg-white rounded-xl shadow-xl min-h-[100px]" id="gameBoard">
+      <div class="game-board w-full grid grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 bg-white rounded-xl shadow-xl min-h-[100px]" id="gameBoard">
         {{-- Game board will be populated by JavaScript --}}
       </div>
     </div>

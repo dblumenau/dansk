@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Core Game Logic Functions ---
 function createCardElement(item) {
   const cardDiv = document.createElement('div');
-  cardDiv.className = 'card bg-transparent h-24 rounded-lg cursor-pointer relative transition-transform duration-500 ease-in-out';
+  cardDiv.className = 'card p-0 bg-transparent w-full aspect-[3/2] rounded-lg cursor-pointer relative transition-transform duration-500 ease-in-out';
   cardDiv.dataset.pairId = item.pairId;
   cardDiv.dataset.value = item.value;
 
@@ -143,12 +143,9 @@ function initializeGame(termsArray) {
 
   if(gameBoard) {
     gameBoard.innerHTML = ''; // Clear previous cards
-    const numCards = gameCardsData.length;
-    // Adjusted class names for gap and padding to match Blade (gap-px, p-1 sm:p-1)
-    if (numCards <= 12) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 gap-px p-1 sm:p-1 bg-white rounded-xl shadow-xl min-h-[100px]';
-    else if (numCards <= 20) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-px p-1 sm:p-1 bg-white rounded-xl shadow-xl min-h-[100px]';
-    else if (numCards <= 30) gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-4 sm:grid-cols-6 gap-px p-1 sm:p-1 bg-white rounded-xl shadow-xl min-h-[100px]';
-    else gameBoard.className = 'game-board grid grid-cols-2 xs:grid-cols-4 sm:grid-cols-8 gap-px p-1 sm:p-1 bg-white rounded-xl shadow-xl min-h-[100px]';
+    // const numCards = gameCardsData.length; // This variable is no longer needed here
+    // The dynamic className assignments for gameBoard based on numCards have been removed
+    // to allow Tailwind classes from the Blade template to control responsiveness.
 
     gameCardsData.forEach(item => {
       const cardElement = createCardElement(item);
